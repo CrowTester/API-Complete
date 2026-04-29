@@ -135,13 +135,13 @@ function App() {
         <div className="footer-content">
           <p>&copy; 2026 Catálogo de Filmes. Todos os direitos reservados.</p>
           <div className="social-icons">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
+            <a href="https://www.instagram.com/grah_hz" target="_blank" rel="noopener noreferrer" title="Instagram">
               <FiInstagram size={24} />
             </a>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" title="GitHub">
+            <a href="https://github.com/DaviGrah2" target="_blank" rel="noopener noreferrer" title="GitHub">
               <FiGithub size={24} />
             </a>
-            <a href="mailto:contato@example.com" title="Email">
+            <a href="mailto:davigrah2010@gmail.com" title="Email">
               <FiMail size={24} />
             </a>
           </div>
