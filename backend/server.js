@@ -14,9 +14,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 
-// TMDB API Key - Substitua pela sua chave da API do TMDB (https://www.themoviedb.org/settings/api)
-const API_KEY = 'YOUR_TMDB_API_KEY';
-
 //Array of filmes for simulantion a database;
 let filmes = [
     { id: 1, titulo: 'O Senhor dos Anéis', genero: 'Fantasia', poster: null },
@@ -24,20 +21,6 @@ let filmes = [
     { id: 3, titulo: 'O Pequenino', genero: 'Comédia', poster: null },
     { id: 4, titulo: 'Capitão América: guerra civil', genero: 'Ficção Científica', poster: null }
 ]
-
-// Função para buscar poster do TMDB
-async function getPoster(titulo) {
-  try {
-    const response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(titulo)}`);
-    const data = await response.json();
-    if (data.results && data.results.length > 0) {
-      return `https://image.tmdb.org/t/p/w500${data.results[0].poster_path}`;
-    }
-  } catch (error) {
-    console.error('Erro ao buscar poster:', error);
-  }
-  return null;
-}
 
 //System call GET;
 app.get('/filmes', (req, res) => {
