@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { FiInstagram, FiGithub, FiMail } from 'react-icons/fi'
 import './App.css'
+
+const API_BASE = 'http://localhost:3000'
 
 function App() {
   const [filmes, setFilmes] = useState([])
@@ -15,9 +19,8 @@ function App() {
   const fetchFilmes = async (generoFiltro = '') => {
     setLoading(true)
     try {
-      const url = generoFiltro ? `http://localhost:3000/filmes/genero?nome=${generoFiltro}` : 'http://localhost:3000/filmes'
-      const response = await fetch(url)
-      const data = await response.json()
+      const url = generoFiltro ? `${API_BASE}/filmes/genero?nome=${generoFiltro}` : `${API_BASE}/filmes`
+      const { data } = await axios.get(url)
       setFilmes(data)
     } catch (error) {
       console.error('Erro ao buscar filmes:', error)
@@ -30,45 +33,35 @@ function App() {
     e.preventDefault()
     if (!titulo || !genero) return
     try {
-      const response = await fetch('http://localhost:3000/filmes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ titulo, genero })
-      })
-      if (response.ok) {
-        setTitulo('')
-        setGenero('')
-        fetchFilmes(filtroGenero)
-      } else {
-        const error = await response.json()
-        alert(error.error)
-      }
+      await axios.post(`${API_BASE}/filmes`, { titulo, genero })
+      setTitulo('')
+      setGenero('')
+      fetchFilmes(filtroGenero)
     } catch (error) {
       console.error('Erro ao adicionar filme:', error)
+      alert(error.response?.data?.error || 'Erro ao adicionar filme')
     }
   }
 
   const handleFileChange = async (id, e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('poster', file);
+    const file = e.target.files[0]
+    if (!file) return
+    
+    const formData = new FormData()
+    formData.append('poster', file)
+    
     try {
-      const response = await fetch('http://localhost:3000/upload', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await response.json();
-      await fetch(`http://localhost:3000/filmes/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ poster: data.url })
-      });
-      fetchFilmes(filtroGenero);
+      const { data: uploadResponse } = await axios.post(`${API_BASE}/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      
+      await axios.put(`${API_BASE}/filmes/${id}`, { poster: uploadResponse.url })
+      
+      fetchFilmes(filtroGenero)
+      alert('Imagem atualizada com sucesso!')
     } catch (error) {
-      console.error('Erro ao atualizar poster:', error);
+      console.error('Erro ao atualizar poster:', error)
+      alert('Erro ao atualizar a imagem. Tente novamente.')
     }
   }
 
@@ -107,7 +100,7 @@ function App() {
               value={filtroGenero}
               onChange={(e) => setFiltroGenero(e.target.value)}
             />
-            <button onClick={filtrarPorGenero}>Filtrar</button>
+            <button onClick={() => fetchFilmes(filtroGenero)}>Filtrar</button>
             <button onClick={() => { setFiltroGenero(''); fetchFilmes() }}>Limpar</button>
           </div>
         </section>
@@ -138,6 +131,22 @@ function App() {
           )}
         </section>
       </main>
+      <footer className="footer">
+        <div className="footer-content">
+          <p>&copy; 2026 Catálogo de Filmes. Todos os direitos reservados.</p>
+          <div className="social-icons">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
+              <FiInstagram size={24} />
+            </a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" title="GitHub">
+              <FiGithub size={24} />
+            </a>
+            <a href="mailto:contato@example.com" title="Email">
+              <FiMail size={24} />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
