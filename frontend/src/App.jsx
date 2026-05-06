@@ -152,7 +152,6 @@ function App() {
                   )}
                   <h3>{filme.titulo}</h3>
                   <p>{filme.genero}</p>
-                  <img src={filme.imagemFile} alt={filme.titulo} />
                 </div>
               ))}
             </div>
