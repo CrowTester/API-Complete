@@ -1,8 +1,11 @@
 //Essential imports for the server work;
-
+const pkg = require("pg");
+const { Pool } = pkg;
+const pool = require("./db");
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+const path = require("path");
 
 const app = express();
 const port = 3000;
@@ -33,10 +36,10 @@ async function getPoster(titulo) {
 
 //Array of filmes for simulantion a database;
 let filmes = [
-    { id: 1, titulo: 'O Senhor dos Anéis', genero: 'Fantasia', poster: null },
-    { id: 2, titulo: 'Matrix', genero: 'Ficção Científica', poster: null },
-    { id: 3, titulo: 'O Pequenino', genero: 'Comédia', poster: null },
-    { id: 4, titulo: 'Capitão América: guerra civil', genero: 'Ficção Científica', poster: null }
+    { id: 1, titulo: 'O Senhor dos Anéis', genero: 'Fantasy', poster: null },
+    { id: 2, titulo: 'Matrix', genero: 'Sci-Fic', poster: null },
+    { id: 3, titulo: 'O Pequenino', genero: 'Comedy', poster: null },
+    { id: 4, titulo: 'Capitão América: guerra civil', genero: 'Sci-Fic', poster: null }
 ]
 
 //System call GET;
@@ -63,7 +66,15 @@ app.post('/upload', upload.single('poster'), (req, res) => {
 });
 
 app.post('/filmes', async (req, res) => {
-    const { titulo, genero } = req.body;
+    const { titulo, genero , imagem} = req.body;
+
+    await pool.query(
+    "INSERT INTO filmes (titulo, genero, imagem) VALUES ($1, $2, $3)",
+    [titulo, genero, imagem]
+  );
+
+  res.send("Filme salvo!");
+
     if (!titulo || !genero) {
         return res.status(400).json({ error: 'Título e gênero são obrigatórios' });
     }
@@ -78,6 +89,7 @@ app.post('/filmes', async (req, res) => {
     filmes.push(novoFilme);
     res.status(201).json(novoFilme);
 });
+
 
 //System call DELETE;
 

@@ -150,6 +150,7 @@
   margin-bottom: 10px;
   color: rgba(255, 255, 255, 0.7);
   font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .movie-card h3 {
@@ -271,22 +272,22 @@
   transform: translateY(-5px);
 }
 
-  @media (max-width: 1024px) {
+@media (max-width: 1024px) {
+  .social-icons {
     margin-top: 20px;
     flex-wrap: wrap;
     justify-content: center;
+  }
 
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
+  .social-icons a {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
   }
 }
+
+  
+
 
 #spacer {
   height: 88px;
